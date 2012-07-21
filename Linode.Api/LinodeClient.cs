@@ -5,6 +5,7 @@ using System.Text;
 using Linode.Api.Base;
 using Linode.Api.Linode;
 using Linode.Api.Reference;
+using Linode.Api.Utility;
 
 namespace Linode.Api
 {
@@ -67,8 +68,6 @@ namespace Linode.Api
 
         #region Linode Actions
 
-        #region List / Get
-
         /// <summary>
         /// Get a List of Linodes - Optionally Restricted to a Specific Linode Id
         /// </summary>
@@ -90,6 +89,104 @@ namespace Linode.Api
             }));
 
             httpClient.InvokeGet();
+        }
+
+        #region Boot, Reboot Shutdown
+
+        /// <summary>
+        /// Boot a Linode
+        /// </summary>
+        /// <param name="linodeId">The Linode ID</param>
+        /// <param name="configId">The Configuration ID (optional)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to return to with the response</param>
+        public static void BootLinode(int linodeId, int? configId, string apiKey, Action<Response<JobResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (configId.HasValue && configId.Value <= 0)
+                throw new ArgumentOutOfRangeException("configId");
+
+            var req_dict = new Dictionary<string, string>();
+
+            req_dict.Add("LinodeID", linodeId.ToString());
+
+            if (configId.HasValue)
+                req_dict.Add("ConfigID", configId.Value.ToString());
+
+            var req = new Request(LinodeActions.LINODE_BOOT, req_dict);
+
+            var httpClient = new HttpClient<JobResponse>(req, new Action<Response<JobResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+
+        }
+
+        /// <summary>
+        /// Reboots a Linode
+        /// </summary>
+        /// <param name="linodeId">The Linode ID</param>
+        /// <param name="configId">The Configuration ID (optional)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to return to with the response</param>
+        public static void RebootLinode(int linodeId, int? configId, string apiKey, Action<Response<JobResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (configId.HasValue && configId.Value <= 0)
+                throw new ArgumentOutOfRangeException("configId");
+
+            var req_dict = new Dictionary<string, string>();
+
+            req_dict.Add("LinodeID", linodeId.ToString());
+
+            if (configId.HasValue)
+                req_dict.Add("ConfigID", configId.Value.ToString());
+
+            var req = new Request(LinodeActions.LINODE_REBOOT, req_dict);
+
+            var httpClient = new HttpClient<JobResponse>(req, new Action<Response<JobResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+
+        }
+
+        /// <summary>
+        /// Shutdown a Linode
+        /// </summary>
+        /// <param name="linodeId">The Linode ID</param>
+        /// <param name="configId">The Configuration ID (optional)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to return to with the response</param>
+        public static void ShutdownLinode(int linodeId, string apiKey, Action<Response<JobResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            var req_dict = new Dictionary<string, string>();
+
+            req_dict.Add("LinodeID", linodeId.ToString());
+
+            var req = new Request(LinodeActions.LINODE_SHUTDOWN, req_dict);
+
+            var httpClient = new HttpClient<JobResponse>(req, new Action<Response<JobResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+
         }
 
         #endregion

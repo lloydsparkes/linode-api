@@ -47,6 +47,7 @@
     <Compile Include="Linode\Ip.cs" />
     <Compile Include="Linode\Job.cs" />
     <Compile Include="Linode\Node.cs" />
+    <Compile Include="Linode\PaymentTerm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reference\AccountInformation.cs" />
     <Compile Include="Reference\ApiKey.cs" />
@@ -57,6 +58,8 @@
     <Compile Include="Reference\Script.cs" />
     <Compile Include="Base\Response.cs" />
     <Compile Include="Base\Request.cs" />
+    <Compile Include="Utility\JobResponse.cs" />
+    <Compile Include="Utility\LinodeResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
