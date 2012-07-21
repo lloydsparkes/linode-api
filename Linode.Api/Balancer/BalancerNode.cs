@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Linode.Api.ObjectModel.NodeBalance
+namespace Linode.Api.Balancer
 {
     public enum ModeEnum
     {
