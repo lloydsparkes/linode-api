@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Linode.Api.Base;
+using Linode.Api.Linode;
 using Linode.Api.Reference;
 
 namespace Linode.Api
@@ -51,7 +52,7 @@ namespace Linode.Api
             if (string.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException("apiKey");
 
-            var req = new Request(apiKey, LinodeActions.USER_GETAPIKEY, new Dictionary<string,string>());
+            var req = new Request(apiKey, LinodeActions.ACCOUNT_INFO, new Dictionary<string,string>());
 
             var httpClient = new HttpClient<AccountInformation>(req, new Action<Response<AccountInformation>>(resp =>
             {
@@ -61,6 +62,37 @@ namespace Linode.Api
 
             httpClient.InvokeGet();
         }
+
+        #endregion
+
+        #region Linode Actions
+
+        #region List / Get
+
+        /// <summary>
+        /// Get a List of Linodes - Optionally Restricted to a Specific Linode Id
+        /// </summary>
+        /// <param name="linodeId">Optional - Restrict the list of Linodes to a single Linode</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">To action to callback to with the response</param>
+        public static void GetLinodes(int? linodeId, string apiKey, Action<Response<Node[]>> responseAction)
+        {
+            var req_dict = new Dictionary<string, string>();
+            if(linodeId.HasValue && linodeId.Value > 0)
+                req_dict.Add("LinodeID", linodeId.Value.ToString());
+
+            var req = new Request(LinodeActions.LINODE_LIST, req_dict);
+
+            var httpClient = new HttpClient<Node[]>(req, new Action<Response<Node[]>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
+        #endregion
 
         #endregion
     }
