@@ -193,7 +193,179 @@ namespace Linode.Api
 
         #region Create, Delete, Update
 
-        
+        /// <summary>
+        /// Create a Linode
+        /// </summary>
+        /// <param name="dataCenterId">The Data Center Id</param>
+        /// <param name="planId">The Plan Id</param>
+        /// <param name="paymentTerm">The Payment Term</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The Response action to return the response to</param>
+        public static void CreateLinode(int dataCenterId, int planId, PaymentTerm paymentTerm,
+            string apiKey, Action<Response<LinodeResponse>> responseAction)
+        {
+            if (dataCenterId <= 0)
+                throw new ArgumentOutOfRangeException("dataCenterId");
+
+            if (planId <= 0)
+                throw new ArgumentOutOfRangeException("planId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("DatacenterID", dataCenterId.ToString());
+            req_dict.Add("PlanID", planId.ToString());
+            req_dict.Add("PaymentTerm", ((int)paymentTerm).ToString());
+
+            var req = new Request(LinodeActions.LINODE_CREATE, req_dict);
+
+            var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+
+        }
+
+        /// <summary>
+        /// Delete a Linode
+        /// </summary>
+        /// <param name="linodeId">The Id of the Linode to delete</param>
+        /// <param name="skipChecks">Skip Safety Checks (optional - defaults to false)</param>
+        /// <param name="apiKey">The users Api Key</param>
+        /// <param name="responseAction">The action to return the response to</param>
+        public static void DeleteLinode(int linodeId, bool? skipChecks, string apiKey, Action<Response<LinodeResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeId", linodeId.ToString());
+
+            if (skipChecks.HasValue)
+                req_dict.Add("skipChecks", skipChecks.Value.ToString());
+
+            var req = new Request(LinodeActions.LINODE_DELETE, req_dict);
+
+            var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
+        /// <summary>
+        /// Updates the Alert / Backup Options for a Linode
+        /// Also the Label and Linode Manager Display Group
+        /// </summary>
+        /// <param name="linodeId">The Id of the Linode to Update</param>
+        /// <param name="label">The new Label of the Linode (optional)</param>
+        /// <param name="lpmDisplayGroup">The Linode Manager Display Group (optional)</param>
+        /// <param name="alertCpuEnabled">Should CPU Usage Alerts be Enabled (optional)</param>
+        /// <param name="alertDiskEnabled">Should Disk IO Usage Alerts be Enabled (optional)</param>
+        /// <param name="alertBWInEnabled">Should Bandwidth In Usage Alerts be Enabled (optional)</param>
+        /// <param name="alertBWOutEnabled">Should Bandwidth Out Usage Alerts be Enabled (optional)</param>
+        /// <param name="alertBWQuotaEnabled">Should Bandwidth Quota Alerts be Enabled (optional)</param>
+        /// <param name="alertCpuThreshold">What should the CPU Alert Threshold be (optional)</param>
+        /// <param name="alertDiskThreshold">What should the Disk Alert Threshold be (optional)</param>
+        /// <param name="alertBWInThreshold">What should the Bandwidth In Threshold be (optional)</param>
+        /// <param name="alertBWOutThreshold">What should the Bandwidth Out Threshold be (optional)</param>
+        /// <param name="alertBWQuotaThreshold">What should the Bandwidth Quota Threshold be (optional)</param>
+        /// <param name="watchdogEnabled">Should the (Lassie?) Watchdog be Enabled (optional)</param>
+        /// <param name="backupWindow">What should the backup Window be (0-23) (optional)</param>
+        /// <param name="backupWeeklyDay">What should the backup Day of the Week be (0-7) (optional)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action the response should be given to</param>
+        public static void UpdateLinode(
+            int linodeId,
+            string? label,
+            string? lpmDisplayGroup,
+            bool? alertCpuEnabled,
+            bool? alertDiskEnabled,
+            bool? alertBWInEnabled,
+            bool? alertBWOutEnabled,
+            bool? alertBWQuotaEnabled,
+            int? alertCpuThreshold,
+            int? alertDiskThreshold,
+            int? alertBWInThreshold,
+            int? alertBWOutThreshold,
+            int? alertBWQuotaThreshold,
+            bool? watchdogEnabled,
+            int? backupWindow,
+            int? backupWeeklyDay,
+            string apiKey,
+            Action<Response<LinodeResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if(backupWindow.HasValue && (backupWindow.Value < 0 || backupWindow.Value >23))
+                throw new ArgumentOutOfRangeException("backupWindow");
+
+            if (backupWeeklyDay.HasValue && (backupWeeklyDay.Value < 0 || backupWeeklyDay.Value > 7))
+                throw new ArgumentOutOfRangeException("backupWeeklyDay");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeId", linodeId.ToString());
+
+            if (label.HasValue)
+                req_dict.Add("Label", label.Value);
+
+            if (lpmDisplayGroup.HasValue)
+                req_dict.Add("lpm_displayGroup", lpmDisplayGroup.Value);
+
+            if (alertCpuEnabled.HasValue)
+                req_dict.Add("Alert_cpu_enabled", alertCpuEnabled.Value.ToString().ToLower());
+
+            if (alertDiskEnabled.HasValue)
+                req_dict.Add("Alert_diskio_enabled", alertDiskEnabled.Value.ToString().ToLower());
+
+            if (alertBWInEnabled.HasValue)
+                req_dict.Add("Alert_bwin_enabled", alertBWInEnabled.Value.ToString().ToLower());
+
+            if (alertBWOutEnabled.HasValue)
+                req_dict.Add("Alert_bwout_enabled", alertBWOutEnabled.Value.ToString().ToLower());
+
+            if (alertBWQuotaEnabled.HasValue)
+                req_dict.Add("Alert_bwquota_enabled", alertBWQuotaEnabled.Value.ToString().ToLower());
+
+            if (alertCpuThreshold.HasValue)
+                req_dict.Add("Alert_cpu_threshold", alertCpuThreshold.Value.ToString());
+
+            if (alertDiskThreshold.HasValue)
+                req_dict.Add("Alert_diskio_threshold", alertDiskThreshold.Value.ToString());
+
+            if (alertBWInThreshold.HasValue)
+                req_dict.Add("Alert_bwin_threshold", alertBWInThreshold.Value.ToString());
+
+            if (alertBWOutThreshold.HasValue)
+                req_dict.Add("Alert_bwout_threshold", alertBWOutThreshold.Value.ToString());
+
+            if (alertBWQuotaThreshold.HasValue)
+                req_dict.Add("Alert_bwquota_threshold", alertBWQuotaThreshold.Value.ToString());
+
+            if (watchdogEnabled.HasValue)
+                req_dict.Add("watchdog", watchdogEnabled.Value.ToString().ToLower());
+
+            if (backupWindow.HasValue)
+                req_dict.Add("backupWindow", alertBWOutThreshold.Value.ToString());
+
+            if (backupWeeklyDay.HasValue)
+                req_dict.Add("backupWeeklyDay", alertBWQuotaThreshold.Value.ToString());
+
+            var req = new Request(LinodeActions.LINODE_UPDATE, req_dict);
+
+            var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+            
 
         #endregion
 
