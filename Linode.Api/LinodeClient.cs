@@ -280,8 +280,8 @@ namespace Linode.Api
         /// <param name="responseAction">The action the response should be given to</param>
         public static void UpdateLinode(
             int linodeId,
-            string? label,
-            string? lpmDisplayGroup,
+            String label,
+            String lpmDisplayGroup,
             bool? alertCpuEnabled,
             bool? alertDiskEnabled,
             bool? alertBWInEnabled,
@@ -310,11 +310,11 @@ namespace Linode.Api
             var req_dict = new Dictionary<string, string>();
             req_dict.Add("LinodeId", linodeId.ToString());
 
-            if (label.HasValue)
-                req_dict.Add("Label", label.Value);
+            if (string.IsNullOrEmpty(label))
+                req_dict.Add("Label", label);
 
-            if (lpmDisplayGroup.HasValue)
-                req_dict.Add("lpm_displayGroup", lpmDisplayGroup.Value);
+            if (string.IsNullOrEmpty(lpmDisplayGroup))
+                req_dict.Add("lpm_displayGroup", lpmDisplayGroup);
 
             if (alertCpuEnabled.HasValue)
                 req_dict.Add("Alert_cpu_enabled", alertCpuEnabled.Value.ToString().ToLower());
@@ -441,6 +441,55 @@ namespace Linode.Api
         }
 
         #endregion
+
+        #endregion
+
+        #region Linode Disk Actions
+
+        #endregion
+
+        #region Linode Config Actions
+
+        #endregion
+
+        #region Linode IP Actions
+
+        #endregion
+
+        #region Linode Job Actions
+
+        /// <summary>
+        /// Gets a List of Jobs for the Given Linode
+        /// </summary>
+        /// <param name="linodeId">The Linode Id to Get Jobs for</param>
+        /// <param name="jobId">The Job Id to limit the results to (optional)</param>
+        /// <param name="pendingOnly">Set to true if you only want Pending Jobs (optional - default false)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The Action to pass the response to</param>
+        public static void GetJobs(int linodeId, int? jobId, bool? pendingOnly, string apiKey, Action<Response<Job[]>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+            
+            if (jobId.HasValue && jobId.Value > 0)
+                req_dict.Add("JobID", jobId.Value.ToString());
+
+            if (pendingOnly.HasValue)
+                req_dict.Add("pendingOnly", pendingOnly.Value.ToString().ToLower());
+
+            var req = new Request(LinodeActions.LINODE_JOB_LIST, req_dict);
+
+            var httpClient = new HttpClient<Job[]>(req, new Action<Response<Job[]>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
 
         #endregion
     }
