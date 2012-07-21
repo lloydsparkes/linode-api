@@ -80,7 +80,7 @@ namespace Linode.Api
             if(linodeId.HasValue && linodeId.Value > 0)
                 req_dict.Add("LinodeID", linodeId.Value.ToString());
 
-            var req = new Request(LinodeActions.LINODE_LIST, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_LIST, req_dict);
 
             var httpClient = new HttpClient<Node[]>(req, new Action<Response<Node[]>>(resp =>
             {
@@ -115,7 +115,7 @@ namespace Linode.Api
             if (configId.HasValue)
                 req_dict.Add("ConfigID", configId.Value.ToString());
 
-            var req = new Request(LinodeActions.LINODE_BOOT, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_BOOT, req_dict);
 
             var httpClient = new HttpClient<JobResponse>(req, new Action<Response<JobResponse>>(resp =>
             {
@@ -149,7 +149,7 @@ namespace Linode.Api
             if (configId.HasValue)
                 req_dict.Add("ConfigID", configId.Value.ToString());
 
-            var req = new Request(LinodeActions.LINODE_REBOOT, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_REBOOT, req_dict);
 
             var httpClient = new HttpClient<JobResponse>(req, new Action<Response<JobResponse>>(resp =>
             {
@@ -177,7 +177,7 @@ namespace Linode.Api
 
             req_dict.Add("LinodeID", linodeId.ToString());
 
-            var req = new Request(LinodeActions.LINODE_SHUTDOWN, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_SHUTDOWN, req_dict);
 
             var httpClient = new HttpClient<JobResponse>(req, new Action<Response<JobResponse>>(resp =>
             {
@@ -215,7 +215,7 @@ namespace Linode.Api
             req_dict.Add("PlanID", planId.ToString());
             req_dict.Add("PaymentTerm", ((int)paymentTerm).ToString());
 
-            var req = new Request(LinodeActions.LINODE_CREATE, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_CREATE, req_dict);
 
             var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
             {
@@ -245,7 +245,7 @@ namespace Linode.Api
             if (skipChecks.HasValue)
                 req_dict.Add("skipChecks", skipChecks.Value.ToString());
 
-            var req = new Request(LinodeActions.LINODE_DELETE, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_DELETE, req_dict);
 
             var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
             {
@@ -310,10 +310,10 @@ namespace Linode.Api
             var req_dict = new Dictionary<string, string>();
             req_dict.Add("LinodeId", linodeId.ToString());
 
-            if (string.IsNullOrEmpty(label))
+            if (!string.IsNullOrEmpty(label))
                 req_dict.Add("Label", label);
 
-            if (string.IsNullOrEmpty(lpmDisplayGroup))
+            if (!string.IsNullOrEmpty(lpmDisplayGroup))
                 req_dict.Add("lpm_displayGroup", lpmDisplayGroup);
 
             if (alertCpuEnabled.HasValue)
@@ -355,7 +355,7 @@ namespace Linode.Api
             if (backupWeeklyDay.HasValue)
                 req_dict.Add("backupWeeklyDay", alertBWQuotaThreshold.Value.ToString());
 
-            var req = new Request(LinodeActions.LINODE_UPDATE, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_UPDATE, req_dict);
 
             var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
             {
@@ -366,7 +366,6 @@ namespace Linode.Api
             httpClient.InvokeGet();
         }
             
-
         #endregion
 
         #region Clone, Resize
@@ -398,7 +397,7 @@ namespace Linode.Api
             req_dict.Add("PlanID", planId.ToString());
             req_dict.Add("PaymentTerm", ((int)paymentTerm).ToString());
 
-            var req = new Request(LinodeActions.LINODE_CLONE, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_CLONE, req_dict);
 
             var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
             {
@@ -429,7 +428,7 @@ namespace Linode.Api
             req_dict.Add("LinodeID", linodeId.ToString());
             req_dict.Add("PlanID", planId.ToString());
 
-            var req = new Request(LinodeActions.LINODE_RESIZE, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_RESIZE, req_dict);
 
             var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
             {
@@ -450,6 +449,256 @@ namespace Linode.Api
 
         #region Linode Config Actions
 
+        /// <summary>
+        /// Lists the Configurations for a Given Linode
+        /// </summary>
+        /// <param name="linodeId">The Linode Id to get Configs for</param>
+        /// <param name="configId">The Config Id to get (optional)</param>
+        /// <param name="apiKey">The users Api Key</param>
+        /// <param name="responseAction">The action to send the response to</param>
+        public static void ListConfigurations(int linodeId, int? configId, string apiKey, Action<Response<Config[]>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+
+            if (configId.HasValue && configId.Value > 0)
+                req_dict.Add("ConfigID", configId.Value.ToString());
+
+            var req = new Request(apiKey, LinodeActions.LINODE_CONFIG_LIST, req_dict);
+
+            var httpClient = new HttpClient<Config[]>(req, new Action<Response<Config[]>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
+        /// <summary>
+        /// Deletes a Configuration
+        /// </summary>
+        /// <param name="linodeId">The Linode Id of the Config To Delete</param>
+        /// <param name="configId">The Config Id of the Config To Delete</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to send the response to</param>
+        public static void DeleteConfiguration(int linodeId, int configId, string apiKey, Action<Response<ConfigResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (configId <= 0)
+                throw new ArgumentOutOfRangeException("configId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+            req_dict.Add("ConfigID", configId.ToString());
+
+            var req = new Request(apiKey, LinodeActions.LINODE_CONFIG_DELETE, req_dict);
+
+            var httpClient = new HttpClient<ConfigResponse>(req, new Action<Response<ConfigResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
+        /// <summary>
+        /// Create a new Configuration
+        /// </summary>
+        /// <param name="linodeId">The Linode's Id</param>
+        /// <param name="kernelId">The New Kernel Id</param>
+        /// <param name="label">The new Label (Optional)</param>
+        /// <param name="comments">The new comments (Optional)</param>
+        /// <param name="ramLimit">The Ram Limit (Optional)</param>
+        /// <param name="diskList">The List of Disks (Optional)</param>
+        /// <param name="runLevel">The Run Level (Optional)</param>
+        /// <param name="rootDeviceNum">The Root Device Number (Optional)</param>
+        /// <param name="customRootDevice">Custom Root Device (Optional)</param>
+        /// <param name="rootDeviceRO">Should the Root Device be RO? (Optional)</param>
+        /// <param name="helperDisableUpdateDb">Disable Helper_UpdateDB (Optional)</param>
+        /// <param name="helperXen">Disable Helper_Xen (Optional)</param>
+        /// <param name="helperDepMod">Disable Helper_DepMod (Optional)</param>
+        /// <param name="devTmpFsAutoMount">Should p_vops mount devtmpfs at Book? (Optional)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to return the response to</param>
+        public static void CreateConfiguration(int linodeId,
+            int kernelId,
+            string label,
+            string comments,
+            int? ramLimit,
+            List<int> diskList,
+            RunLevelEnum? runLevel,
+            int? rootDeviceNum,
+            string customRootDevice,
+            bool? rootDeviceRO,
+            bool? helperDisableUpdateDb,
+            bool? helperXen,
+            bool? helperDepMod,
+            bool? devTmpFsAutoMount,
+            string apiKey,
+            Action<Response<ConfigResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (kernelId <= 0)
+                throw new ArgumentOutOfRangeException("kernelId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+            req_dict.Add("KernelID", kernelId.ToString());
+
+            if (!string.IsNullOrEmpty(label))
+                req_dict.Add("Label", label);
+
+            if (!string.IsNullOrEmpty(comments))
+                req_dict.Add("Comments", comments);
+
+            if (ramLimit.HasValue && ramLimit.Value > 0)
+                req_dict.Add("RAMLimit", ramLimit.ToString());
+
+            if(diskList != null)
+                req_dict.Add("DiskList", diskList.Select(a => a.ToString()).Aggregate((a,b) => a.ToString() + "," + b.ToString()));
+
+            if (runLevel.HasValue)
+                req_dict.Add("RunLevel", runLevel.Value.ToString().ToLower());
+
+            if (rootDeviceNum.HasValue)
+                req_dict.Add("RootDeviceNum", rootDeviceNum.Value.ToString());
+
+            if (!string.IsNullOrEmpty(customRootDevice))
+                req_dict.Add("RootDeviceCustom", customRootDevice);
+
+            if (rootDeviceRO.HasValue)
+                req_dict.Add("RootDeviceRO", rootDeviceRO.Value.ToString().ToLower());
+
+            if (helperDisableUpdateDb.HasValue)
+                req_dict.Add("helper_disableUpdateDB", helperDisableUpdateDb.Value.ToString().ToLower());
+
+            if (helperXen.HasValue)
+                req_dict.Add("helper_xen", helperXen.Value.ToString().ToLower());
+
+            if (helperDepMod.HasValue)
+                req_dict.Add("helper_depmod", helperDepMod.Value.ToString().ToLower());
+
+            if (devTmpFsAutoMount.HasValue)
+                req_dict.Add("devtmpfs_automount", devTmpFsAutoMount.Value.ToString().ToLower());
+
+            var req = new Request(apiKey, LinodeActions.LINODE_CONFIG_CREATE, req_dict);
+
+            var httpClient = new HttpClient<ConfigResponse>(req, new Action<Response<ConfigResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
+        /// <summary>
+        /// Update the Given Configuration
+        /// </summary>
+        /// <param name="linodeId">The Linode's Id</param>
+        /// <param name="configId">The Config's Id</param>
+        /// <param name="kernelId">The New Kernel Id (Optional)</param>
+        /// <param name="label">The new Label (Optional)</param>
+        /// <param name="comments">The new comments (Optional)</param>
+        /// <param name="ramLimit">The Ram Limit (Optional)</param>
+        /// <param name="diskList">The List of Disks (Optional)</param>
+        /// <param name="runLevel">The Run Level (Optional)</param>
+        /// <param name="rootDeviceNum">The Root Device Number (Optional)</param>
+        /// <param name="customRootDevice">Custom Root Device (Optional)</param>
+        /// <param name="rootDeviceRO">Should the Root Device be RO? (Optional)</param>
+        /// <param name="helperDisableUpdateDb">Disable Helper_UpdateDB (Optional)</param>
+        /// <param name="helperXen">Disable Helper_Xen (Optional)</param>
+        /// <param name="helperDepMod">Disable Helper_DepMod (Optional)</param>
+        /// <param name="devTmpFsAutoMount">Should p_vops mount devtmpfs at Book? (Optional)</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to return the response to</param>
+        public static void UpdateConfiguration(int linodeId,
+            int configId,
+            int? kernelId,
+            string label,
+            string comments,
+            int? ramLimit,
+            List<int> diskList,
+            RunLevelEnum? runLevel,
+            int? rootDeviceNum,
+            string customRootDevice,
+            bool? rootDeviceRO,
+            bool? helperDisableUpdateDb,
+            bool? helperXen,
+            bool? helperDepMod,
+            bool? devTmpFsAutoMount,
+            string apiKey,
+            Action<Response<ConfigResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (configId <= 0)
+                throw new ArgumentOutOfRangeException("configId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+            req_dict.Add("ConfigID", configId.ToString());
+
+            if(kernelId.HasValue)
+            req_dict.Add("KernelID", kernelId.Value.ToString());
+
+            if (!string.IsNullOrEmpty(label))
+                req_dict.Add("Label", label);
+
+            if (!string.IsNullOrEmpty(comments))
+                req_dict.Add("Comments", comments);
+
+            if (ramLimit.HasValue && ramLimit.Value > 0)
+                req_dict.Add("RAMLimit", ramLimit.ToString());
+
+            if (diskList != null)
+                req_dict.Add("DiskList", diskList.Select(a => a.ToString()).Aggregate((a, b) => a.ToString() + "," + b.ToString()));
+
+            if (runLevel.HasValue)
+                req_dict.Add("RunLevel", runLevel.Value.ToString().ToLower());
+
+            if (rootDeviceNum.HasValue)
+                req_dict.Add("RootDeviceNum", rootDeviceNum.Value.ToString());
+
+            if (!string.IsNullOrEmpty(customRootDevice))
+                req_dict.Add("RootDeviceCustom", customRootDevice);
+
+            if (rootDeviceRO.HasValue)
+                req_dict.Add("RootDeviceRO", rootDeviceRO.Value.ToString().ToLower());
+
+            if (helperDisableUpdateDb.HasValue)
+                req_dict.Add("helper_disableUpdateDB", helperDisableUpdateDb.Value.ToString().ToLower());
+
+            if (helperXen.HasValue)
+                req_dict.Add("helper_xen", helperXen.Value.ToString().ToLower());
+
+            if (helperDepMod.HasValue)
+                req_dict.Add("helper_depmod", helperDepMod.Value.ToString().ToLower());
+
+            if (devTmpFsAutoMount.HasValue)
+                req_dict.Add("devtmpfs_automount", devTmpFsAutoMount.Value.ToString().ToLower());
+
+            var req = new Request(apiKey, LinodeActions.LINODE_CONFIG_CREATE, req_dict);
+
+            var httpClient = new HttpClient<ConfigResponse>(req, new Action<Response<ConfigResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
         #endregion
 
         #region Linode IP Actions
@@ -468,7 +717,7 @@ namespace Linode.Api
             var req_dict = new Dictionary<string, string>();
             req_dict.Add("LinodeID", linodeId.ToString());
 
-            var req = new Request(LinodeActions.LINODE_IP_ADDPRIVATE, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_IP_ADDPRIVATE, req_dict);
 
             var httpClient = new HttpClient<IpResponse>(req, new Action<Response<IpResponse>>(resp =>
             {
@@ -497,7 +746,7 @@ namespace Linode.Api
             if (ipAddressId.HasValue && ipAddressId.Value > 0)
                 req_dict.Add("IPAddressID", ipAddressId.Value.ToString());
 
-            var req = new Request(LinodeActions.LINODE_IP_LIST, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_IP_LIST, req_dict);
 
             var httpClient = new HttpClient<Ip[]>(req, new Action<Response<Ip[]>>(resp =>
             {
@@ -534,7 +783,7 @@ namespace Linode.Api
             if (pendingOnly.HasValue)
                 req_dict.Add("pendingOnly", pendingOnly.Value.ToString().ToLower());
 
-            var req = new Request(LinodeActions.LINODE_JOB_LIST, req_dict);
+            var req = new Request(apiKey, LinodeActions.LINODE_JOB_LIST, req_dict);
 
             var httpClient = new HttpClient<Job[]>(req, new Action<Response<Job[]>>(resp =>
             {
