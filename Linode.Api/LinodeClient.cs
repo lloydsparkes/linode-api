@@ -191,6 +191,85 @@ namespace Linode.Api
 
         #endregion
 
+        #region Create, Delete, Update
+
+        
+
+        #endregion
+
+        #region Clone, Resize
+
+        /// <summary>
+        /// Clone a Linode
+        /// </summary>
+        /// <param name="linodeId">The Linode Id</param>
+        /// <param name="dataCenterId">The Data Center Id</param>
+        /// <param name="planId">The Plan Id</param>
+        /// <param name="paymentTerm">The Payment Term</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The Response action to return the response to</param>
+        public static void CloneLinode(int linodeId, int dataCenterId, int planId, PaymentTerm paymentTerm, 
+            string apiKey, Action<Response<LinodeResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (dataCenterId <= 0)
+                throw new ArgumentOutOfRangeException("dataCenterId");
+
+            if (planId <= 0)
+                throw new ArgumentOutOfRangeException("planId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+            req_dict.Add("DatacenterID", dataCenterId.ToString());
+            req_dict.Add("PlanID", planId.ToString());
+            req_dict.Add("PaymentTerm", ((int)paymentTerm).ToString());
+
+            var req = new Request(LinodeActions.LINODE_CLONE, req_dict);
+
+            var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+
+        }
+
+        /// <summary>
+        /// Resizes a Linode
+        /// </summary>
+        /// <param name="linodeId">The Id of the Linode to resize</param>
+        /// <param name="planId">The Plan Id to resize to</param>
+        /// <param name="apiKey">The Users Api Key</param>
+        /// <param name="responseAction">The action to return the response to</param>
+        public static void ResizeLinode(int linodeId, int planId, string apiKey, Action<Response<LinodeResponse>> responseAction)
+        {
+            if (linodeId <= 0)
+                throw new ArgumentOutOfRangeException("linodeId");
+
+            if (planId <= 0)
+                throw new ArgumentOutOfRangeException("planId");
+
+            var req_dict = new Dictionary<string, string>();
+            req_dict.Add("LinodeID", linodeId.ToString());
+            req_dict.Add("PlanID", planId.ToString());
+
+            var req = new Request(LinodeActions.LINODE_RESIZE, req_dict);
+
+            var httpClient = new HttpClient<LinodeResponse>(req, new Action<Response<LinodeResponse>>(resp =>
+            {
+                if (responseAction != null)
+                    responseAction.Invoke(resp);
+            }));
+
+            httpClient.InvokeGet();
+        }
+
+        #endregion
+
         #endregion
     }
 }
