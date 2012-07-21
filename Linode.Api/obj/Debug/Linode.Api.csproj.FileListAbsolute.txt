@@ -1,0 +1,8 @@
+D:\Projects\Linode.Api\Linode.Api\bin\Debug\Linode.Api.dll
+D:\Projects\Linode.Api\Linode.Api\bin\Debug\Linode.Api.pdb
+D:\Projects\Linode.Api\Linode.Api\bin\Debug\Newtonsoft.Json.dll
+D:\Projects\Linode.Api\Linode.Api\bin\Debug\Newtonsoft.Json.pdb
+D:\Projects\Linode.Api\Linode.Api\bin\Debug\Newtonsoft.Json.xml
+D:\Projects\Linode.Api\Linode.Api\obj\Debug\Linode.Api.csprojResolveAssemblyReference.cache
+D:\Projects\Linode.Api\Linode.Api\obj\Debug\Linode.Api.dll
+D:\Projects\Linode.Api\Linode.Api\obj\Debug\Linode.Api.pdb
