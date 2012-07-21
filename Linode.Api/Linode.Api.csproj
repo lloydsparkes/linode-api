@@ -40,6 +40,8 @@
     <Compile Include="Dns\Resource.cs" />
     <Compile Include="Base\Error.cs" />
     <Compile Include="Base\HttpClient.cs" />
+    <Compile Include="LinodeActions.cs" />
+    <Compile Include="LinodeClient.cs" />
     <Compile Include="Linode\Config.cs" />
     <Compile Include="Linode\Disk.cs" />
     <Compile Include="Linode\Ip.cs" />
