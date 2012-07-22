@@ -6,6 +6,19 @@ using Newtonsoft.Json;
 
 namespace Linode.Api.Dns
 {
+    public enum DomainStatusEnum
+    { 
+        Disabled = 0,
+        Active = 1,
+        EditMode = 2
+    }
+
+    public enum DomainTypeEnum
+    {
+        Master,
+        Slave
+    }
+
     public class Domain
     {
         [JsonProperty("DOMAINID")]
@@ -18,7 +31,24 @@ namespace Linode.Api.Dns
         public String Description { get; set; }
 
         [JsonProperty("TYPE")]
-        public String Type { get; set; }
+        public String TypeRaw { get; set; }
+        public DomainTypeEnum Type
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(TypeRaw))
+                    return DomainTypeEnum.Master;
+
+                try
+                {
+                    return (DomainTypeEnum)Enum.Parse(typeof(DomainTypeEnum), TypeRaw, true);
+                }
+                catch (Exception e)
+                {
+                    return DomainTypeEnum.Master;
+                }
+            }
+        }
 
         [JsonProperty("SOA_EMAIL")]
         public String SoaEmail { get; set; }
@@ -39,6 +69,13 @@ namespace Linode.Api.Dns
         public int TTLSeconds { get; set; }
 
         [JsonProperty("STATUS")]
-        public int Status { get; set; }
+        public int StatusRaw { get; set; }
+        public DomainStatusEnum Status
+        {
+            get
+            {
+                return (DomainStatusEnum)StatusRaw;
+            }
+        }
     }
 }

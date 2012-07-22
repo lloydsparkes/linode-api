@@ -33,6 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Api\DnsMethods.cs" />
+    <Compile Include="Api\DnsResourceMethods.cs" />
+    <Compile Include="Api\NodeConfigMethods.cs" />
+    <Compile Include="Api\NodeDiskMethods.cs" />
+    <Compile Include="Api\NodeIPMethods.cs" />
+    <Compile Include="Api\NodeJobMethods.cs" />
+    <Compile Include="Api\NodeMethods.cs" />
+    <Compile Include="Api\UtilityMethods.cs" />
     <Compile Include="Balancer\Balancer.cs" />
     <Compile Include="Balancer\BalancerConfig.cs" />
     <Compile Include="Balancer\BalancerNode.cs" />
@@ -41,7 +49,6 @@
     <Compile Include="Base\Error.cs" />
     <Compile Include="Base\HttpClient.cs" />
     <Compile Include="LinodeActions.cs" />
-    <Compile Include="LinodeClient.cs" />
     <Compile Include="Linode\Config.cs" />
     <Compile Include="Linode\Disk.cs" />
     <Compile Include="Linode\Ip.cs" />
@@ -60,6 +67,8 @@
     <Compile Include="Base\Request.cs" />
     <Compile Include="Utility\ConfigResponse.cs" />
     <Compile Include="Utility\DiskResponse.cs" />
+    <Compile Include="Utility\DomainResourceResponse.cs" />
+    <Compile Include="Utility\DomainResponse.cs" />
     <Compile Include="Utility\IpResponse.cs" />
     <Compile Include="Utility\JobResponse.cs" />
     <Compile Include="Utility\LinodeResponse.cs" />
