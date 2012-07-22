@@ -110,7 +110,10 @@ namespace Linode.Api
                 req_dict.Add("axfr_ips", axfrIps);
 
             if (!string.IsNullOrEmpty(soaEmail))
-                req_dict.Add("SOA_Email", soaEmail);       
+                req_dict.Add("SOA_Email", soaEmail);
+
+            if (status.HasValue)
+                req_dict.Add("status", ((int)status).ToString());
             
             var req = new Request(apiKey, LinodeActions.DOMAIN_CREATE, req_dict);
 
@@ -181,6 +184,9 @@ namespace Linode.Api
 
             if (!string.IsNullOrEmpty(soaEmail))
                 req_dict.Add("SOA_Email", soaEmail);
+
+            if (status.HasValue)
+                req_dict.Add("status", ((int)status).ToString());
 
             var req = new Request(apiKey, LinodeActions.DOMAIN_UPDATE, req_dict);
 

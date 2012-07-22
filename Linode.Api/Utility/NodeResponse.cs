@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 
 namespace Linode.Api.Utility
 {
-    public class JobResponse
+    public class NodeResponse
     {
-        [JsonProperty("JobID")]
-        public int JobId { get; set; }
+        [JsonProperty("NodeID")]
+        public int NodeId { get; set; }
     }
 }

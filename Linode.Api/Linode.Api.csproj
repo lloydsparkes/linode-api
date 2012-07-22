@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Api\BalancerConfigMethods.cs" />
+    <Compile Include="Api\BalancerMethods.cs" />
+    <Compile Include="Api\BalancerNodeMethods.cs" />
     <Compile Include="Api\DnsMethods.cs" />
     <Compile Include="Api\DnsResourceMethods.cs" />
     <Compile Include="Api\NodeConfigMethods.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="Reference\Script.cs" />
     <Compile Include="Base\Response.cs" />
     <Compile Include="Base\Request.cs" />
+    <Compile Include="Utility\BalancerResponse.cs" />
     <Compile Include="Utility\ConfigResponse.cs" />
     <Compile Include="Utility\DiskResponse.cs" />
     <Compile Include="Utility\DomainResourceResponse.cs" />
@@ -73,6 +77,7 @@
     <Compile Include="Utility\IpResponse.cs" />
     <Compile Include="Utility\JobResponse.cs" />
     <Compile Include="Utility\LinodeResponse.cs" />
+    <Compile Include="Utility\NodeResponse.cs" />
     <Compile Include="Utility\StackScriptResponse.cs" />
   </ItemGroup>
   <ItemGroup>

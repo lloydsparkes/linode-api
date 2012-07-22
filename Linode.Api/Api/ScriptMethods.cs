@@ -7,7 +7,7 @@ using Linode.Api.Reference;
 using Linode.Api.Utility;
 
 
-namespace Linode.Api.Api
+namespace Linode.Api
 {
     public static class ScriptMethods
     {
