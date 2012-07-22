@@ -128,9 +128,25 @@ namespace Linode.Api
             httpClient.InvokeGet();
         }
 
-        public static void GetStackScripts(Action<Response<Script[]>> responseAction)
+        /// <summary>
+        /// Gets a list of Public StackScripts
+        /// </summary>
+        /// <param name="distributionId">Optional - Filter by Distribution ID</param>
+        /// <param name="distributionVendor">Optional - Filter by Distribution Vendor</param>
+        /// <param name="keywords">Optional - Search Keywords</param>
+        /// <param name="responseAction"></param>
+        public static void GetStackScripts(int? distributionId, string distributionVendor, string keywords, Action<Response<Script[]>> responseAction)
         {
             var req_dict = new Dictionary<string, string>();
+
+            if (distributionId.HasValue && distributionId.Value > 0)
+                req_dict.Add("DistributionID", distributionId.Value.ToString());
+
+            if (!string.IsNullOrEmpty(distributionVendor))
+                req_dict.Add("DistributionVendor", distributionVendor);
+
+            if (!string.IsNullOrEmpty(keywords))
+                req_dict.Add("keywords", keywords);
 
             var req = new Request(LinodeActions.STACKSCRIPTS, req_dict);
 

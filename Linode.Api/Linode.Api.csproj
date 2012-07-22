@@ -40,6 +40,7 @@
     <Compile Include="Api\NodeIPMethods.cs" />
     <Compile Include="Api\NodeJobMethods.cs" />
     <Compile Include="Api\NodeMethods.cs" />
+    <Compile Include="Api\ScriptMethods.cs" />
     <Compile Include="Api\UtilityMethods.cs" />
     <Compile Include="Balancer\Balancer.cs" />
     <Compile Include="Balancer\BalancerConfig.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Utility\IpResponse.cs" />
     <Compile Include="Utility\JobResponse.cs" />
     <Compile Include="Utility\LinodeResponse.cs" />
+    <Compile Include="Utility\StackScriptResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
