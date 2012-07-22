@@ -59,6 +59,7 @@
     <Compile Include="Base\Response.cs" />
     <Compile Include="Base\Request.cs" />
     <Compile Include="Utility\ConfigResponse.cs" />
+    <Compile Include="Utility\DiskResponse.cs" />
     <Compile Include="Utility\IpResponse.cs" />
     <Compile Include="Utility\JobResponse.cs" />
     <Compile Include="Utility\LinodeResponse.cs" />
